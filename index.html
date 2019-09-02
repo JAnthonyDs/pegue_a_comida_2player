@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Move</title>
+    <style>
+        canvas {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            background-color: black;
+            margin-top: -300px;
+            margin-left: -300px;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="600" height="600" id="mycanvas">O seu Browser não suporta o canvas</canvas>
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var ctx = canvas.getContext("2d");
+
+        teclas = {};
+
+        var bloco = {
+            x: 250,
+            y: canvas.height / 2 - 60,
+            altura : 20,
+            largura: 20,
+            speed: 5,
+            score:0,
+            cor: "white"
+        };
+
+        var oponente = {
+            x: 290,
+            y: canvas.height / 2 -60,
+            altura: 20,
+            largura: 20,
+            speed: 5,
+            score: 0,
+            cor:"blue"
+        };
+
+        var comida = {
+            x: Math.floor(Math.random() * 600),
+            y: Math.floor(Math.random() * 600),
+            largura: 10,
+            altura: 10,
+        }
+
+        document.addEventListener("keydown", function(e){
+            teclas[e.keyCode] = true;
+            //alert(e.keyCode)
+        }, false)
+
+        document.addEventListener("keyup", function(e){
+            delete teclas[e.keyCode]
+        }, false)
+
+        function movebloco(){
+            if(87 in teclas && bloco.y > 0)
+                bloco.y -= bloco.speed
+            if(38 in teclas && oponente.y > 0)
+                oponente.y -= oponente.speed
+            if(83 in teclas && bloco.y < 580)
+                bloco.y += bloco.speed
+            if(40 in teclas && oponente.y < 580)
+                oponente.y += oponente.speed
+            if(68 in teclas && bloco.x < 580)
+                bloco.x += bloco.speed
+            if(39 in teclas && oponente.x < 580)
+                oponente.x += oponente.speed
+            if(65 in teclas && bloco.x > 0)
+                bloco.x -= bloco.speed
+            if(37 in teclas && oponente.x > 0)
+                oponente.x -= oponente.speed
+        }
+
+        function desenha(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+
+            movebloco();
+            
+            if(comida.x - bloco.x >= -10 && comida.x - bloco.x <= 20 && comida.y - bloco.y >= -10 && comida.y - bloco.y <= 20){
+                comida.x = Math.floor(Math.random() * 550)
+                comida.y = Math.floor(Math.random() * 550)
+                bloco.score += 1
+            }
+
+            if(comida.x - oponente.x >= -10 && comida.x - oponente.x <= 20 && comida.y - oponente.y >= -10 && comida.y - oponente.y <= 20){
+                comida.x = Math.floor(Math.random() * 550)
+                comida.y = Math.floor(Math.random() * 550)
+                oponente.score += 1
+            }
+            
+
+            ctx.fillStyle = bloco.cor;
+            ctx.fillRect(bloco.x,bloco.y,bloco.largura,bloco.altura)
+            ctx.fillStyle = oponente.cor;
+            ctx.fillRect(oponente.x,oponente.y,oponente.largura,oponente.altura)
+            ctx.fillStyle = "white"
+            ctx.fillText('Pontuação 1: '+ bloco.score,20,20)
+            ctx.fillText('Pontuação 2: '+ oponente.score,20,50)
+            ctx.fillText('Jogador 1-> ',290,20)
+            ctx.fillText('x: '+bloco.x,400,20)
+            ctx.fillText('y: '+bloco.y,470,20)
+            ctx.fillText('Jogador 2-> ',290,40)
+            ctx.fillText('x: '+oponente.x,400,40)
+            ctx.fillText('y: '+oponente.y,470,40)
+            ctx.fillText("Player 1: W-A-S-D | Player 2: use as setas",0,570)
+            ctx.fillStyle = "red";
+            ctx.fillRect(comida.x,comida.y,comida.altura,comida.altura)
+            
+
+            ctx.font = "20px Arial"
+            
+
+            setTimeout(desenha,15)
+        }
+        
+
+        desenha()
+    </script>
+</body>
+</html>
